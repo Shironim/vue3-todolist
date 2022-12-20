@@ -164,7 +164,7 @@ const deleteData = (data) => {
   // console.log(data)
 }
 
-// Calendar
+// Calendar | not work yet
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
@@ -205,29 +205,6 @@ const attrs = ref([
   <!-- <v-date-picker /> -->
   <div class="todo">
     <HeaderForm @tambahTask="addTodo" />
-    <!-- <form v-on:submit="addTodo" class="bg-white shadowApp rounded-sm overflow-hidden header">
-    <div class="p-8">
-      <h1 class="text-2xl font-bold text-left mb-6">Add Task</h1>
-      <div class="grid grid-flow-row">
-        <input type="text" v-model="inputData" class="w-full border-2 rounded-lg px-4 py-3 border-blue-300 mb-2">
-        <section class="grid grid-flow-col place-content-evenly">
-          <div>
-            <input type="radio" name="type" id="Personal" v-model="newTodoType" value="Personal">
-            <label class="px-2 text-md" for="">Personal</label>
-          </div>
-          <div>
-            <input type="radio" name="type" id="College" v-model="newTodoType" value="College">
-            <label class="px-2 text-md" for="">College</label>
-          </div>
-          <div>
-            <input type="radio" name="type" id="Intern" v-model="newTodoType" value="Intern">
-            <label class="px-2 text-md" for="">Intern</label>
-          </div>
-        </section>
-      </div>
-    </div>
-    <button type="submit" class="w-full bg-sky-900 py-3 text-xl font-bold text-white">ADD TASK</button>
-  </form> -->
     <main class="mt-6">
       <section class="bg-white mb-6 shadowApp rounded grid gap-y-4 p-4">
         <h2 class="text-2xl pb-4 font-bold">Categories</h2>
