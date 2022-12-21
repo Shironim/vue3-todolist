@@ -1,21 +1,79 @@
 <script setup>
-import { ref, reactive } from 'vue'
-// Input Data
-// const inputTask = ref('')
-// const inputDeskripsi = ref('')
-// const newTodoType = ref('Personal')
+import { reactive } from 'vue'
+import { GraphQLClient } from 'graphql-request'
+import { ADD_TUGAS } from '../hygraph/query'
+const HYGRAPH_API = import.meta.env.VITE_HYGRAPH_API
+const HYGRAPH_TOKEN = import.meta.env.VITE_HYGRAPH_TOKEN
+
 const inputData = reactive({
   task: "",
   deskripsi: "",
   type: "Personal",
   date: ""
 })
-const emit = defineEmits(['tambahTask'])
+
+const emit = defineEmits(['update-data'])
+
+// Save 
+const addTodo = async () => {
+  // event.preventDefault();
+
+  const graphQLClient = new GraphQLClient(HYGRAPH_API, {
+    headers: {
+      authorization: `Bearer ${HYGRAPH_TOKEN}`,
+    },
+  })
+  const variables = {
+    tugas: inputData.task,
+    start: getDateNow(),
+    deadline: getDateNow(inputData.date),
+    deskripsi: inputData.deskripsi,
+    kategori: inputData.type,
+    publish: inputData.task,
+  }
+  await graphQLClient.request(ADD_TUGAS, variables)
+  resetInput();
+}
+
+const resetInput = () => {
+  inputData.task = "";
+  inputData.deskripsi = "";
+  inputData.type = "Personal";
+  inputData.date = "";
+}
+// Get Date Now
+const getDateNow = (tgl) => {
+  if (!tgl) {
+    var date = new Date();
+  } else {
+    var date = tgl;
+  }
+  let tahun = date.getFullYear();
+  let bulan = date.getMonth();
+  let spesifikDate = date.getDate();
+
+  switch (bulan) {
+    case 0: bulan = "Jan"; break;
+    case 1: bulan = "Feb"; break;
+    case 2: bulan = "Mar"; break;
+    case 3: bulan = "Apr"; break;
+    case 4: bulan = "Mei"; break;
+    case 5: bulan = "Jun"; break;
+    case 6: bulan = "Jul"; break;
+    case 7: bulan = "Agu"; break;
+    case 8: bulan = "Sep"; break;
+    case 9: bulan = "Okt"; break;
+    case 10: bulan = "Nov"; break;
+    case 11: bulan = "Des"; break;
+  }
+  return `${tahun}-${bulan}-${spesifikDate}`
+}
+
+
 
 </script>
 <template>
-  <form v-on:submit.prevent="$emit('tambahTask', inputData)"
-    class="bg-white shadowApp rounded-sm overflow-hidden header">
+  <form v-on:submit.prevent="(addTodo)" class="bg-white shadowApp rounded-sm overflow-hidden header">
     <div class="p-8">
       <h1 class="text-3xl font-bold text-center mb-6">Get Your Jobs Done</h1>
       <div class="grid grid-flow-row">
