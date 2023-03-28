@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import { GraphQLClient } from 'graphql-request'
-import { ADD_TUGAS } from '../hygraph/query'
+import { ADD_TUGAS, TASK_QUERY } from '../hygraph/query'
 const HYGRAPH_API = import.meta.env.VITE_HYGRAPH_API
 const HYGRAPH_TOKEN = import.meta.env.VITE_HYGRAPH_TOKEN
 
@@ -17,23 +17,30 @@ const emit = defineEmits(['update-data'])
 // Save 
 const addTodo = async () => {
   // event.preventDefault();
-
-  const graphQLClient = new GraphQLClient(HYGRAPH_API, {
-    headers: {
-      authorization: `Bearer ${HYGRAPH_TOKEN}`,
-    },
-  })
-  const variables = {
-    tugas: inputData.task,
-    start: getDateNow(),
-    deadline: getDateNow(inputData.date),
-    deskripsi: inputData.deskripsi,
-    kategori: inputData.type,
-    publish: inputData.task,
+  try {
+    const graphQLClient = new GraphQLClient(HYGRAPH_API, {
+      headers: {
+        authorization: `Bearer ${HYGRAPH_TOKEN}`,
+      },
+    })
+    const variables = {
+      tugas: inputData.task,
+      start: getDateNow(),
+      deadline: getDateNow(inputData.date),
+      deskripsi: inputData.deskripsi,
+      kategori: inputData.type,
+      publish: inputData.task,
+    }
+    await graphQLClient.request(ADD_TUGAS, variables)
+  } catch (error) {
+    console.log(error);
+  } finally {
+    emit('update-data', TASK_QUERY);
+    resetInput();
   }
-  await graphQLClient.request(ADD_TUGAS, variables)
-  resetInput();
+
 }
+
 
 const resetInput = () => {
   inputData.task = "";
